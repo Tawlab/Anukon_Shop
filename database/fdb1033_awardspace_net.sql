@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Mar 31, 2026 at 11:24 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Host: fdb1033.awardspace.net
+-- Generation Time: Apr 02, 2026 at 02:25 PM
+-- Server version: 8.0.32
+-- PHP Version: 8.1.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `4744774_kaykong`
 --
+CREATE DATABASE IF NOT EXISTS `4744774_kaykong` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `4744774_kaykong`;
 
 -- --------------------------------------------------------
 
@@ -28,14 +30,14 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `addresses` (
-  `address_id` int(11) NOT NULL,
-  `home_no` varchar(50) DEFAULT NULL,
-  `moo` varchar(20) DEFAULT NULL,
-  `soi` varchar(100) DEFAULT NULL,
-  `road` varchar(100) DEFAULT NULL,
-  `village` varchar(150) DEFAULT NULL,
-  `remark` text DEFAULT NULL,
-  `sub_dist_id` int(11) NOT NULL
+  `address_id` int NOT NULL,
+  `home_no` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `moo` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `soi` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `road` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `village` varchar(150) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `remark` text COLLATE utf8mb4_general_ci,
+  `sub_dist_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -45,15 +47,15 @@ CREATE TABLE `addresses` (
 --
 
 CREATE TABLE `bill_purchases` (
-  `purchases_id` int(11) NOT NULL,
-  `sp_id` int(11) DEFAULT NULL,
-  `total_cost` decimal(12,2) DEFAULT 0.00,
+  `purchases_id` int NOT NULL,
+  `sp_id` int DEFAULT NULL,
+  `total_cost` decimal(12,2) DEFAULT '0.00',
   `purchase_date` date DEFAULT NULL,
   `received_date` date DEFAULT NULL,
-  `purchase_status` tinyint(4) DEFAULT NULL COMMENT '1=Pending, 2=Received, 0=Cancelled',
-  `remark` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `purchase_status` tinyint DEFAULT NULL COMMENT '1=Pending, 2=Received, 0=Cancelled',
+  `remark` text COLLATE utf8mb4_general_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -61,7 +63,10 @@ CREATE TABLE `bill_purchases` (
 --
 
 INSERT INTO `bill_purchases` (`purchases_id`, `sp_id`, `total_cost`, `purchase_date`, `received_date`, `purchase_status`, `remark`, `created_at`, `updated_at`) VALUES
-(1, 1, 700.00, '2026-03-31', '2026-03-31', 2, '', '2026-03-31 08:59:58', '2026-03-31 09:00:12');
+(1, 1, 700.00, '2026-03-31', '2026-03-31', 2, '', '2026-03-31 08:59:58', '2026-03-31 09:00:12'),
+(2, 1, 500.00, '2026-04-01', '2026-04-01', 2, '', '2026-03-31 17:16:42', '2026-03-31 17:16:48'),
+(3, 1, 5000.00, '2026-04-01', '2026-04-01', 2, '', '2026-03-31 17:34:17', '2026-03-31 17:34:23'),
+(4, 1, 500.00, '2026-04-01', '2026-04-01', 2, '', '2026-03-31 22:32:06', '2026-03-31 22:32:13');
 
 -- --------------------------------------------------------
 
@@ -70,19 +75,19 @@ INSERT INTO `bill_purchases` (`purchases_id`, `sp_id`, `total_cost`, `purchase_d
 --
 
 CREATE TABLE `bill_sales` (
-  `sale_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `address_id` int(11) DEFAULT NULL,
-  `sale_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `sale_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `address_id` int DEFAULT NULL,
+  `sale_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `total_price` decimal(12,2) NOT NULL,
-  `shipping_type` varchar(50) DEFAULT NULL,
-  `payment_type` varchar(50) DEFAULT NULL,
-  `sale_status` tinyint(4) DEFAULT 1,
-  `slip_img` varchar(255) DEFAULT NULL,
-  `slip_confirmed` tinyint(4) DEFAULT 0,
-  `remark` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `shipping_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `payment_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sale_status` tinyint DEFAULT '1',
+  `slip_img` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `slip_confirmed` tinyint DEFAULT '0',
+  `remark` text COLLATE utf8mb4_general_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -90,7 +95,32 @@ CREATE TABLE `bill_sales` (
 --
 
 INSERT INTO `bill_sales` (`sale_id`, `user_id`, `address_id`, `sale_date`, `total_price`, `shipping_type`, `payment_type`, `sale_status`, `slip_img`, `slip_confirmed`, `remark`, `created_at`, `updated_at`) VALUES
-(1, 2, NULL, '2026-03-31 09:09:23', 30.00, 'store_pickup', 'COD', 1, NULL, 0, '', '2026-03-31 09:09:23', '2026-03-31 09:10:01');
+(1, 2, NULL, '2026-03-31 09:09:23', 30.00, 'store_pickup', 'COD', 0, NULL, 0, 'ยกเลิกด่วน: ทดสอบ', '2026-03-31 09:09:23', '2026-03-31 10:10:08'),
+(2, 2, NULL, '2026-03-31 10:55:56', 35.00, 'store_pickup', 'COD', 3, NULL, 0, '', '2026-03-31 10:55:56', '2026-03-31 22:30:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `capital_history`
+--
+
+CREATE TABLE `capital_history` (
+  `cap_id` int NOT NULL,
+  `user_id` int DEFAULT NULL,
+  `amount` decimal(12,2) NOT NULL,
+  `remark` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `capital_history`
+--
+
+INSERT INTO `capital_history` (`cap_id`, `user_id`, `amount`, `remark`, `created_at`) VALUES
+(2, 3, 5000.00, 'ทุนเริ่มต้น', '2026-03-31 23:43:24'),
+(3, 3, 500.00, 'ถูกหวย', '2026-03-31 23:51:27'),
+(4, 3, 1000.00, 'ถูกหวย', '2026-03-31 23:51:46'),
+(5, 3, 100.00, 'ๅ', '2026-03-31 23:51:59');
 
 -- --------------------------------------------------------
 
@@ -99,13 +129,20 @@ INSERT INTO `bill_sales` (`sale_id`, `user_id`, `address_id`, `sale_date`, `tota
 --
 
 CREATE TABLE `cart_items` (
-  `cart_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `prod_id` int(11) NOT NULL,
-  `quantity` int(11) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `cart_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `prod_id` int NOT NULL,
+  `quantity` int DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cart_items`
+--
+
+INSERT INTO `cart_items` (`cart_id`, `user_id`, `prod_id`, `quantity`, `created_at`, `updated_at`) VALUES
+(4, 2, 2, 4, '2026-04-02 14:13:36', '2026-04-02 14:13:38');
 
 -- --------------------------------------------------------
 
@@ -114,15 +151,15 @@ CREATE TABLE `cart_items` (
 --
 
 CREATE TABLE `details_sales` (
-  `dtl_sale_id` int(11) NOT NULL,
-  `sale_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `batch_id` int(11) DEFAULT NULL,
-  `quantity` int(11) NOT NULL,
+  `dtl_sale_id` int NOT NULL,
+  `sale_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `batch_id` int DEFAULT NULL,
+  `quantity` int NOT NULL,
   `unit_price` decimal(10,2) NOT NULL,
   `subtotal` decimal(12,2) NOT NULL,
-  `pmt_id` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `pmt_id` int DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -130,7 +167,8 @@ CREATE TABLE `details_sales` (
 --
 
 INSERT INTO `details_sales` (`dtl_sale_id`, `sale_id`, `product_id`, `batch_id`, `quantity`, `unit_price`, `subtotal`, `pmt_id`, `created_at`) VALUES
-(1, 1, 2, NULL, 6, 5.00, 30.00, NULL, '2026-03-31 09:09:23');
+(1, 1, 2, NULL, 6, 5.00, 30.00, NULL, '2026-03-31 09:09:23'),
+(2, 2, 2, NULL, 7, 5.00, 35.00, NULL, '2026-03-31 10:55:56');
 
 -- --------------------------------------------------------
 
@@ -139,14 +177,14 @@ INSERT INTO `details_sales` (`dtl_sale_id`, `sale_id`, `product_id`, `batch_id`,
 --
 
 CREATE TABLE `detail_purchases` (
-  `dlt_purchases_id` int(11) NOT NULL,
-  `purchases_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `order_qty` int(11) NOT NULL,
-  `received_qty` int(11) DEFAULT 0,
+  `dlt_purchases_id` int NOT NULL,
+  `purchases_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `order_qty` int NOT NULL,
+  `received_qty` int DEFAULT '0',
   `unit_cost` decimal(10,2) NOT NULL,
   `subtotal` decimal(12,2) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -154,7 +192,10 @@ CREATE TABLE `detail_purchases` (
 --
 
 INSERT INTO `detail_purchases` (`dlt_purchases_id`, `purchases_id`, `product_id`, `order_qty`, `received_qty`, `unit_cost`, `subtotal`, `created_at`) VALUES
-(1, 1, 2, 100, 100, 7.00, 700.00, '2026-03-31 08:59:58');
+(1, 1, 2, 100, 100, 7.00, 700.00, '2026-03-31 08:59:58'),
+(2, 2, 2, 100, 100, 5.00, 500.00, '2026-03-31 17:16:42'),
+(3, 3, 2, 1000, 1000, 5.00, 5000.00, '2026-03-31 17:34:17'),
+(4, 4, 2, 100, 100, 5.00, 500.00, '2026-03-31 22:32:06');
 
 -- --------------------------------------------------------
 
@@ -163,10 +204,10 @@ INSERT INTO `detail_purchases` (`dlt_purchases_id`, `purchases_id`, `product_id`
 --
 
 CREATE TABLE `districts` (
-  `dist_id` int(11) NOT NULL,
-  `dist_name` varchar(150) NOT NULL,
-  `prov_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `dist_id` int NOT NULL,
+  `dist_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `prov_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -176,15 +217,22 @@ CREATE TABLE `districts` (
 --
 
 CREATE TABLE `expenses` (
-  `exp_id` int(11) NOT NULL,
-  `exp_cate_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `exp_id` int NOT NULL,
+  `exp_cate_id` int NOT NULL,
+  `user_id` int NOT NULL,
   `amount` decimal(12,2) NOT NULL,
   `exp_date` date NOT NULL,
-  `remark` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `remark` text COLLATE utf8mb4_general_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `expenses`
+--
+
+INSERT INTO `expenses` (`exp_id`, `exp_cate_id`, `user_id`, `amount`, `exp_date`, `remark`, `created_at`, `updated_at`) VALUES
+(26, 1, 3, 1000.00, '2026-04-01', 'ค่าไฟ', '2026-03-31 22:37:54', '2026-03-31 22:37:54');
 
 -- --------------------------------------------------------
 
@@ -193,11 +241,18 @@ CREATE TABLE `expenses` (
 --
 
 CREATE TABLE `expense_categories` (
-  `exp_cate_id` int(11) NOT NULL,
-  `exp_cate_name` varchar(150) NOT NULL,
-  `exp_cate_status` tinyint(4) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `exp_cate_id` int NOT NULL,
+  `exp_cate_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `exp_cate_status` tinyint DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `expense_categories`
+--
+
+INSERT INTO `expense_categories` (`exp_cate_id`, `exp_cate_name`, `exp_cate_status`, `created_at`) VALUES
+(1, 'ค่าใช้จ่ายทั่วไป', 1, '2026-03-31 22:37:54');
 
 -- --------------------------------------------------------
 
@@ -206,14 +261,14 @@ CREATE TABLE `expense_categories` (
 --
 
 CREATE TABLE `notifications` (
-  `not_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(200) DEFAULT NULL,
-  `message` text DEFAULT NULL,
-  `not_type` varchar(50) DEFAULT NULL,
-  `ref_id` int(11) DEFAULT NULL,
-  `is_read` tinyint(4) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `not_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `title` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `message` text COLLATE utf8mb4_general_ci,
+  `not_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ref_id` int DEFAULT NULL,
+  `is_read` tinyint DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -223,16 +278,16 @@ CREATE TABLE `notifications` (
 --
 
 CREATE TABLE `products` (
-  `prod_id` int(11) NOT NULL,
-  `prod_name` varchar(200) NOT NULL,
-  `type_id` int(11) DEFAULT NULL,
-  `barcode` varchar(50) DEFAULT NULL,
+  `prod_id` int NOT NULL,
+  `prod_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+  `type_id` int DEFAULT NULL,
+  `barcode` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `detail` text DEFAULT NULL,
-  `img` varchar(255) DEFAULT NULL,
-  `status` tinyint(4) DEFAULT 1,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `detail` text COLLATE utf8mb4_general_ci,
+  `img` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status` tinyint DEFAULT '1',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -249,13 +304,13 @@ INSERT INTO `products` (`prod_id`, `prod_name`, `type_id`, `barcode`, `price`, `
 --
 
 CREATE TABLE `product_batches` (
-  `batche_id` int(11) NOT NULL,
-  `detail_purchase_id` int(11) DEFAULT NULL,
-  `product_id` int(11) NOT NULL,
-  `lot_qty` int(11) NOT NULL,
+  `batche_id` int NOT NULL,
+  `detail_purchase_id` int DEFAULT NULL,
+  `product_id` int NOT NULL,
+  `lot_qty` int NOT NULL,
   `expiry_date` date DEFAULT NULL,
   `received_date` date DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -265,11 +320,11 @@ CREATE TABLE `product_batches` (
 --
 
 CREATE TABLE `prod_types` (
-  `type_id` int(11) NOT NULL,
-  `type_name` varchar(100) NOT NULL,
-  `type_status` tinyint(4) DEFAULT 1,
-  `create_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `type_id` int NOT NULL,
+  `type_name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `type_status` tinyint DEFAULT '1',
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -291,13 +346,13 @@ INSERT INTO `prod_types` (`type_id`, `type_name`, `type_status`, `create_at`, `u
 --
 
 CREATE TABLE `promotions` (
-  `pmt_id` int(11) NOT NULL,
-  `pmt_name` varchar(150) NOT NULL,
-  `pmt_type` tinyint(4) DEFAULT NULL COMMENT '1=Fixed Price Single, 2=Fixed Price Bundle',
+  `pmt_id` int NOT NULL,
+  `pmt_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `pmt_type` tinyint DEFAULT NULL COMMENT '1=Fixed Price Single, 2=Fixed Price Bundle',
   `pmt_price` decimal(10,2) NOT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
-  `pmt_status` tinyint(4) DEFAULT 1
+  `pmt_status` tinyint DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -307,10 +362,10 @@ CREATE TABLE `promotions` (
 --
 
 CREATE TABLE `promotion_items` (
-  `pmt_item_id` int(11) NOT NULL,
-  `pmt_id` int(11) NOT NULL,
-  `prod_id` int(11) NOT NULL,
-  `qty_required` int(11) DEFAULT 1
+  `pmt_item_id` int NOT NULL,
+  `pmt_id` int NOT NULL,
+  `prod_id` int NOT NULL,
+  `qty_required` int DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -320,9 +375,9 @@ CREATE TABLE `promotion_items` (
 --
 
 CREATE TABLE `provinces` (
-  `prov_id` int(11) NOT NULL,
-  `prov_name` varchar(150) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `prov_id` int NOT NULL,
+  `prov_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -332,11 +387,11 @@ CREATE TABLE `provinces` (
 --
 
 CREATE TABLE `stocks` (
-  `stock_id` int(11) NOT NULL,
-  `prod_id` int(11) NOT NULL,
-  `total_qty` int(11) DEFAULT 0,
-  `min_stock` int(11) DEFAULT 5,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `stock_id` int NOT NULL,
+  `prod_id` int NOT NULL,
+  `total_qty` int DEFAULT '0',
+  `min_stock` int DEFAULT '5',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -344,7 +399,7 @@ CREATE TABLE `stocks` (
 --
 
 INSERT INTO `stocks` (`stock_id`, `prod_id`, `total_qty`, `min_stock`, `updated_at`) VALUES
-(2, 2, 144, 5, '2026-03-31 09:09:23');
+(2, 2, 1343, 5, '2026-03-31 22:32:13');
 
 -- --------------------------------------------------------
 
@@ -353,13 +408,13 @@ INSERT INTO `stocks` (`stock_id`, `prod_id`, `total_qty`, `min_stock`, `updated_
 --
 
 CREATE TABLE `stock_movements` (
-  `movement_id` int(11) NOT NULL,
-  `prod_id` int(11) NOT NULL,
-  `movement_type` enum('IN','OUT','ADJUST') NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `ref_id` varchar(50) DEFAULT NULL,
-  `remark` text DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `movement_id` int NOT NULL,
+  `prod_id` int NOT NULL,
+  `movement_type` enum('IN','OUT','ADJUST') COLLATE utf8mb4_general_ci NOT NULL,
+  `quantity` int NOT NULL,
+  `ref_id` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `remark` text COLLATE utf8mb4_general_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -368,7 +423,10 @@ CREATE TABLE `stock_movements` (
 
 INSERT INTO `stock_movements` (`movement_id`, `prod_id`, `movement_type`, `quantity`, `ref_id`, `remark`, `created_at`) VALUES
 (2, 2, 'IN', 50, 'SCAN_RECEIVE', 'รับเข้าจากการสแกน', '2026-03-31 08:59:11'),
-(3, 2, 'IN', 100, 'PO-0001', 'รับเข้าหน้าร้าน (PO)', '2026-03-31 09:00:12');
+(3, 2, 'IN', 100, 'PO-0001', 'รับเข้าหน้าร้าน (PO)', '2026-03-31 09:00:12'),
+(4, 2, 'IN', 100, 'PO-0002', 'รับเข้าหน้าร้าน (PO)', '2026-03-31 17:16:48'),
+(5, 2, 'IN', 1000, 'PO-0003', 'รับเข้าหน้าร้าน (PO)', '2026-03-31 17:34:23'),
+(6, 2, 'IN', 100, 'PO-0004', 'รับเข้าหน้าร้าน (PO)', '2026-03-31 22:32:13');
 
 -- --------------------------------------------------------
 
@@ -377,8 +435,8 @@ INSERT INTO `stock_movements` (`movement_id`, `prod_id`, `movement_type`, `quant
 --
 
 CREATE TABLE `store_settings` (
-  `setting_key` varchar(50) NOT NULL,
-  `setting_value` varchar(255) DEFAULT NULL
+  `setting_key` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `setting_value` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -386,7 +444,8 @@ CREATE TABLE `store_settings` (
 --
 
 INSERT INTO `store_settings` (`setting_key`, `setting_value`) VALUES
-('initial_capital', '10000');
+('capital', '010000'),
+('initial_capital', '100004');
 
 -- --------------------------------------------------------
 
@@ -395,11 +454,11 @@ INSERT INTO `store_settings` (`setting_key`, `setting_value`) VALUES
 --
 
 CREATE TABLE `subdistricts` (
-  `sub_dist_id` int(11) NOT NULL,
-  `sub_dist_name` varchar(150) NOT NULL,
-  `zip_code` varchar(10) NOT NULL,
-  `dist_id` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `sub_dist_id` int NOT NULL,
+  `sub_dist_name` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  `zip_code` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `dist_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -409,18 +468,18 @@ CREATE TABLE `subdistricts` (
 --
 
 CREATE TABLE `supplers` (
-  `sp_id` int(11) NOT NULL,
-  `sp_name` varchar(200) NOT NULL,
-  `sp_tax` varchar(20) DEFAULT NULL,
-  `sp_address` int(11) DEFAULT NULL,
-  `sp_email` varchar(100) DEFAULT NULL,
-  `sp_status` tinyint(4) DEFAULT 1,
-  `ct_first_name` varchar(100) DEFAULT NULL,
-  `ct_last_name` varchar(100) DEFAULT NULL,
-  `ct_position` varchar(100) DEFAULT NULL,
-  `ct_phone` varchar(20) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `sp_id` int NOT NULL,
+  `sp_name` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
+  `sp_tax` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sp_address` int DEFAULT NULL,
+  `sp_email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sp_status` tinyint DEFAULT '1',
+  `ct_first_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ct_last_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ct_position` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `ct_phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -437,20 +496,20 @@ INSERT INTO `supplers` (`sp_id`, `sp_name`, `sp_tax`, `sp_address`, `sp_email`, 
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `first_name` varchar(100) DEFAULT NULL,
-  `last_name` varchar(100) DEFAULT NULL,
-  `nick_name` varchar(50) DEFAULT NULL,
-  `phone_no` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `address_id` int(11) DEFAULT NULL,
-  `user_status` tinyint(4) DEFAULT 1 COMMENT '1=Active, 0=Inactive',
-  `role` enum('admin','staff','customer') DEFAULT 'customer',
-  `profile` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `user_id` int NOT NULL,
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `first_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nick_name` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone_no` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address_id` int DEFAULT NULL,
+  `user_status` tinyint DEFAULT '1' COMMENT '1=Active, 0=Inactive',
+  `role` enum('admin','staff','customer') COLLATE utf8mb4_general_ci DEFAULT 'customer',
+  `profile` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -486,6 +545,12 @@ ALTER TABLE `bill_sales`
   ADD PRIMARY KEY (`sale_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `address_id` (`address_id`);
+
+--
+-- Indexes for table `capital_history`
+--
+ALTER TABLE `capital_history`
+  ADD PRIMARY KEY (`cap_id`);
 
 --
 -- Indexes for table `cart_items`
@@ -635,127 +700,133 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `addresses`
 --
 ALTER TABLE `addresses`
-  MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `address_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bill_purchases`
 --
 ALTER TABLE `bill_purchases`
-  MODIFY `purchases_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `purchases_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `bill_sales`
 --
 ALTER TABLE `bill_sales`
-  MODIFY `sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sale_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `capital_history`
+--
+ALTER TABLE `capital_history`
+  MODIFY `cap_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `cart_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `details_sales`
 --
 ALTER TABLE `details_sales`
-  MODIFY `dtl_sale_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `dtl_sale_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `detail_purchases`
 --
 ALTER TABLE `detail_purchases`
-  MODIFY `dlt_purchases_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `dlt_purchases_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `districts`
 --
 ALTER TABLE `districts`
-  MODIFY `dist_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `dist_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `exp_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `exp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `expense_categories`
 --
 ALTER TABLE `expense_categories`
-  MODIFY `exp_cate_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `exp_cate_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `not_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `not_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `prod_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `product_batches`
 --
 ALTER TABLE `product_batches`
-  MODIFY `batche_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `batche_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `prod_types`
 --
 ALTER TABLE `prod_types`
-  MODIFY `type_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `type_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `promotions`
 --
 ALTER TABLE `promotions`
-  MODIFY `pmt_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `pmt_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `promotion_items`
 --
 ALTER TABLE `promotion_items`
-  MODIFY `pmt_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `pmt_item_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `provinces`
 --
 ALTER TABLE `provinces`
-  MODIFY `prov_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `prov_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stocks`
 --
 ALTER TABLE `stocks`
-  MODIFY `stock_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `stock_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `stock_movements`
 --
 ALTER TABLE `stock_movements`
-  MODIFY `movement_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `movement_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `subdistricts`
 --
 ALTER TABLE `subdistricts`
-  MODIFY `sub_dist_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sub_dist_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `supplers`
 --
 ALTER TABLE `supplers`
-  MODIFY `sp_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
