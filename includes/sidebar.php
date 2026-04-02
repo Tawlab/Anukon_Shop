@@ -1,174 +1,232 @@
-<nav id="sidebar" class="d-none d-lg-block border-end bg-white shadow-sm" style="width: 280px; min-height: 100vh; position: sticky; top: 0; z-index: 1000;">
-    <div class="sidebar-header p-4 text-center border-bottom">
-        <h4 class="fw-bold text-primary mb-0"><i class="fa-solid fa-bag-shopping me-2"></i>V-SHOP</h4>
-        <small class="text-muted">ระบบจัดการร้านค้า</small>
-    </div>
-    <div class="p-3 sidebar-scroll">
-        <?php renderMenu($_SESSION['role']); ?>
-    </div>
-</nav>
-
-<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold text-primary" id="sidebarOffcanvasLabel">
-            <i class="fa-solid fa-bag-shopping me-2"></i>V-SHOP MENU
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body p-3 sidebar-scroll">
-        <?php renderMenu($_SESSION['role']); ?>
-    </div>
-</div>
-
 <?php
-// ฟังก์ชันสำหรับสร้างเมนูตามสิทธิ์ผู้ใช้
 function renderMenu($role) {
-    // ดึงชื่อไฟล์ของหน้าที่กำลังเปิดอยู่
     $current_page = basename($_SERVER['PHP_SELF']);
     
-    // ฟังก์ชันย่อยสำหรับเช็คสถานะ Active
     $isActive = function($page) use ($current_page) {
-        return ($current_page == $page) ? 'active bg-primary text-white shadow-sm' : 'text-dark hover-bg-light';
+        return ($current_page == $page) ? 'active' : '';
     };
 
-    echo '<ul class="nav nav-pills flex-column mb-auto gap-1">';
+    echo '<ul class="sidebar-menu">';
     
-    // ================= เมนูหลัก (มีทุกสิทธิ์) =================
-    echo '<li class="nav-item">
-            <a href="dashboard.php" class="nav-link py-3 ' . $isActive('dashboard.php') . '">
-                <i class="fa-solid fa-house fa-fw me-3"></i>หน้าแรก
-            </a>
-          </li>';
+    // Dashboard - ทุก role
+    echo '<li><a href="dashboard.php" class="menu-item ' . $isActive('dashboard.php') . '">
+            <span class="menu-icon"><i class="fa-solid fa-house"></i></span>
+            <span>หน้าแรก</span>
+          </a></li>';
 
     if ($role == 'admin') {
-        // ================= เมนูสำหรับ Admin =================
-        echo '<hr class="my-3 text-muted opacity-25">';
-        echo '<small class="text-muted fw-bold px-3 mb-2 text-uppercase" style="font-size: 0.75rem;">ระบบขายหน้าร้าน (POS)</small>';
+        // POS
+        echo '<li class="menu-section">ขายสินค้า</li>';
+        echo '<li><a href="pos.php" class="menu-item ' . $isActive('pos.php') . '">
+                <span class="menu-icon bg-success-soft text-success"><i class="fa-solid fa-cash-register"></i></span>
+                <span>POS เครื่องคิดเงิน</span>
+              </a></li>';
         
-        echo '<li class="nav-item">
-                <a href="pos.php" class="nav-link py-3 ' . $isActive('pos.php') . '">
-                    <i class="fa-solid fa-cash-register fa-fw me-3"></i>เครื่องคิดเงิน (POS)
-                </a>
-              </li>';
+        // จัดการร้าน
+        echo '<li class="menu-section">จัดการร้านค้า</li>';
+        echo '<li><a href="sales_summary.php" class="menu-item ' . $isActive('sales_summary.php') . '">
+                <span class="menu-icon bg-primary-soft text-primary"><i class="fa-solid fa-chart-pie"></i></span>
+                <span>สรุปการขาย</span>
+              </a></li>';
+        echo '<li><a href="orders_manage.php" class="menu-item ' . $isActive('orders_manage.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-clipboard-list"></i></span>
+                <span>คำสั่งซื้อ</span>
+              </a></li>';
+        echo '<li><a href="inventory.php" class="menu-item ' . $isActive('inventory.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
+                <span>คลังสินค้า</span>
+              </a></li>';
+        echo '<li><a href="categories.php" class="menu-item ' . $isActive('categories.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-tags"></i></span>
+                <span>หมวดหมู่</span>
+              </a></li>';
+        echo '<li><a href="suppliers.php" class="menu-item ' . $isActive('suppliers.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-handshake"></i></span>
+                <span>ซัพพลายเออร์</span>
+              </a></li>';
+        echo '<li><a href="purchases.php" class="menu-item ' . $isActive('purchases.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-truck-ramp-box"></i></span>
+                <span>รับเข้า PO</span>
+              </a></li>';
+        echo '<li><a href="expenses.php" class="menu-item ' . $isActive('expenses.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
+                <span>ค่าใช้จ่าย</span>
+              </a></li>';
               
-        echo '<hr class="my-3 text-muted opacity-25">';
-        echo '<small class="text-muted fw-bold px-3 mb-2 text-uppercase" style="font-size: 0.75rem;">ระบบจัดการร้านค้า</small>';
-        
-        echo '<li class="nav-item">
-                <a href="orders_manage.php" class="nav-link py-3 ' . $isActive('orders_manage.php') . '">
-                    <i class="fa-solid fa-list-check fa-fw me-3"></i>จัดการคำสั่งซื้อ
-                </a>
-              </li>';
-        echo '<li class="nav-item">
-                <a href="inventory.php" class="nav-link py-3 ' . $isActive('inventory.php') . '">
-                    <i class="fa-solid fa-boxes-stacked fa-fw me-3"></i>คลังสินค้า (สต็อก)
-                </a>
-              </li>';
-        echo '<li class="nav-item">
-                <a href="categories.php" class="nav-link py-3 ' . $isActive('categories.php') . '">
-                    <i class="fa-solid fa-tags fa-fw me-3"></i>จัดการหมวดหมู่
-                </a>
-              </li>';
-        echo '<li class="nav-item">
-                <a href="suppliers.php" class="nav-link py-3 ' . $isActive('suppliers.php') . '">
-                    <i class="fa-solid fa-handshake fa-fw me-3"></i>จัดการซัพพลายเออร์
-                </a>
-              </li>';
-        echo '<li class="nav-item">
-                <a href="purchases.php" class="nav-link py-3 ' . $isActive('purchases.php') . '">
-                    <i class="fa-solid fa-truck-ramp-box fa-fw me-3"></i>รับเข้าสินค้า (PO)
-                </a>
-              </li>';
-              
-        echo '<hr class="my-3 text-muted opacity-25">';
-        echo '<small class="text-muted fw-bold px-3 mb-2 text-uppercase" style="font-size: 0.75rem;">จัดการผู้ใช้งาน</small>';
-        
-        echo '<li class="nav-item">
-                <a href="users_manage.php" class="nav-link py-3 ' . $isActive('users_manage.php') . '">
-                    <i class="fa-solid fa-users-gear fa-fw me-3"></i>ข้อมูลสมาชิกลูกค้า
-                </a>
-              </li>';
+        echo '<li class="menu-section">ผู้ใช้งาน</li>';
+        echo '<li><a href="users_manage.php" class="menu-item ' . $isActive('users_manage.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-users-gear"></i></span>
+                <span>จัดการสมาชิก</span>
+              </a></li>';
     } else {
-        // ================= เมนูสำหรับลูกค้า =================
-        echo '<hr class="my-3 text-muted opacity-25">';
-        echo '<small class="text-muted fw-bold px-3 mb-2 text-uppercase" style="font-size: 0.75rem;">บริการของเรา</small>';
-
-        echo '<li class="nav-item">
-                <a href="shop.php" class="nav-link py-3 ' . $isActive('shop.php') . '">
-                    <i class="fa-solid fa-store fa-fw me-3"></i>เลือกซื้อสินค้า
-                </a>
-              </li>';
-        echo '<li class="nav-item">
-                <a href="cart.php" class="nav-link py-3 ' . $isActive('cart.php') . '">
-                    <i class="fa-solid fa-cart-shopping fa-fw me-3"></i>ตะกร้าสินค้า
-                </a>
-              </li>';
-        echo '<li class="nav-item">
-                <a href="my_orders.php" class="nav-link py-3 ' . $isActive('my_orders.php') . '">
-                    <i class="fa-solid fa-receipt fa-fw me-3"></i>ประวัติการสั่งซื้อ
-                </a>
-              </li>';
+        // Customer menu
+        echo '<li class="menu-section">บริการ</li>';
+        echo '<li><a href="shop.php" class="menu-item ' . $isActive('shop.php') . '">
+                <span class="menu-icon bg-success-soft text-success"><i class="fa-solid fa-bag-shopping"></i></span>
+                <span>เลือกซื้อสินค้า</span>
+              </a></li>';
+        echo '<li><a href="cart.php" class="menu-item ' . $isActive('cart.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-cart-shopping"></i></span>
+                <span>ตะกร้า</span>
+              </a></li>';
+        echo '<li><a href="my_orders.php" class="menu-item ' . $isActive('my_orders.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
+                <span>ประวัติสั่งซื้อ</span>
+              </a></li>';
     }
 
-    // ================= เมนูส่วนตัว (มีทุกสิทธิ์) =================
-    echo '<hr class="my-3 text-muted opacity-25">';
-    echo '<small class="text-muted fw-bold px-3 mb-2 text-uppercase" style="font-size: 0.75rem;">บัญชีของฉัน</small>';
-
-    echo '<li class="nav-item">
-            <a href="profile.php" class="nav-link py-3 ' . $isActive('profile.php') . '">
-                <i class="fa-solid fa-user-circle fa-fw me-3"></i>ข้อมูลส่วนตัว
-            </a>
-          </li>';
+    // Personal
+    echo '<li class="menu-section">บัญชี</li>';
+    echo '<li><a href="profile.php" class="menu-item ' . $isActive('profile.php') . '">
+            <span class="menu-icon"><i class="fa-solid fa-circle-user"></i></span>
+            <span>โปรไฟล์</span>
+          </a></li>';
     
-    echo '<li class="nav-item mt-4">
-            <a href="../actions/logout.php" class="nav-link text-danger py-3 border border-danger border-opacity-25 bg-danger bg-opacity-10">
-                <i class="fa-solid fa-right-from-bracket fa-fw me-3"></i>ออกจากระบบ
-            </a>
-          </li>';
+    echo '<li class="mt-3"><a href="../actions/logout.php" class="menu-item menu-logout">
+            <span class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+            <span>ออกจากระบบ</span>
+          </a></li>';
     echo '</ul>';
 }
 ?>
 
+<!-- Desktop Sidebar -->
+<nav id="sidebar" class="d-none d-lg-flex flex-column">
+    <div class="sidebar-brand">
+        <i class="fa-solid fa-store"></i>
+        <div>
+            <div class="brand-name">Anukon Shop</div>
+            <div class="brand-sub">ร้านค้าออนไลน์</div>
+        </div>
+    </div>
+    <div class="sidebar-body">
+        <?php renderMenu($_SESSION['role']); ?>
+    </div>
+</nav>
+
+<!-- Mobile Offcanvas Sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarOffcanvas" style="width: 280px;">
+    <div class="offcanvas-header border-bottom py-3">
+        <h6 class="offcanvas-title fw-bold text-primary mb-0">
+            <i class="fa-solid fa-store me-2"></i>Anukon Shop
+        </h6>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <?php renderMenu($_SESSION['role']); ?>
+    </div>
+</div>
+
 <style>
-    /* สไตล์การตกแต่ง Sidebar */
-    .nav-link {
-        border-radius: 12px;
-        transition: all 0.2s ease-in-out;
-        font-weight: 500;
-        font-size: 0.95rem;
-    }
-    .hover-bg-light:hover {
-        background-color: #f8f9fa;
-        color: var(--primary-blue) !important;
-        transform: translateX(5px); /* เลื่อนขวาเล็กน้อยเมื่อ Hover */
-    }
-    .nav-link.active {
-        box-shadow: 0 4px 10px rgba(0, 86, 179, 0.2);
-    }
-    .nav-link.active i {
-        color: white !important; /* ให้ไอคอนเป็นสีขาวเมื่อปุ่ม Active */
-    }
-    .nav-link.text-danger:hover {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-    .nav-link.text-danger:hover i {
-        color: white !important;
-    }
-    
-    /* Scrollbar สำหรับ Sidebar เผื่อเมนูยาวเกินจอ */
-    .sidebar-scroll {
-        max-height: calc(100vh - 80px); /* หักความสูงของ Header ออก */
+    /* Sidebar Design */
+    #sidebar {
+        width: 260px;
+        min-height: 100vh;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
         overflow-y: auto;
     }
-    .sidebar-scroll::-webkit-scrollbar {
-        width: 4px;
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        color: var(--primary);
+        font-size: 1.25rem;
     }
-    .sidebar-scroll::-webkit-scrollbar-thumb {
-        background-color: #e9ecef;
-        border-radius: 10px;
+    .brand-name {
+        font-weight: 700;
+        font-size: 1rem;
+        line-height: 1.2;
+        color: var(--text);
     }
-    .sidebar-scroll:hover::-webkit-scrollbar-thumb {
-        background-color: #ced4da;
+    .brand-sub {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        font-weight: 400;
     }
+
+    .sidebar-body {
+        padding: 8px 12px;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .menu-section {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        padding: 16px 12px 6px;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        font-size: 0.88rem;
+        transition: var(--transition);
+        margin-bottom: 2px;
+    }
+    .menu-item:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+    .menu-item.active {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(99,102,241,0.25);
+    }
+    .menu-item.active .menu-icon {
+        background: rgba(255,255,255,0.2) !important;
+        color: #fff !important;
+    }
+
+    .menu-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        background: var(--surface-alt);
+        color: var(--text-secondary);
+        flex-shrink: 0;
+        transition: var(--transition);
+    }
+    .bg-success-soft { background: var(--success-soft) !important; }
+    .text-success { color: var(--success) !important; }
+
+    .menu-logout {
+        color: var(--danger) !important;
+    }
+    .menu-logout:hover {
+        background: var(--danger-soft) !important;
+        color: var(--danger) !important;
+    }
+    .menu-logout .menu-icon {
+        background: var(--danger-soft);
+        color: var(--danger);
+    }
+
+    /* Offcanvas override */
+    .offcanvas-body .sidebar-menu { padding: 8px 12px; }
 </style>

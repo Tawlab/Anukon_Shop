@@ -90,6 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt_stock->affected_rows === 0) {
                 throw new Exception("สินค้าบางรายการสต็อกไม่เพียงพอ");
             }
+            
+            // บันทึกประวัติการเคลือนไหวสต็อก (Stock Movements)
+            $sql_mov = "INSERT INTO stock_movements (prod_id, movement_type, quantity, ref_id, remark) VALUES (?, 'OUT', ?, ?, 'ตัดสต็อกจากการสั่งซื้อหน้าร้านเว็บ')";
+            $stmt_mov = $conn->prepare($sql_mov);
+            $ref_id = 'ORD-' . str_pad($sale_id, 4, '0', STR_PAD_LEFT);
+            $stmt_mov->bind_param("iis", $item['prod_id'], $item['quantity'], $ref_id);
+            $stmt_mov->execute();
+            $stmt_mov->close();
         }
 
         // Step 4: ล้างตะกร้าสินค้า

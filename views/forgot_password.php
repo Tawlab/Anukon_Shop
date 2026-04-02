@@ -3,98 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ลืมรหัสผ่าน | V-SHOP</title>
+    <title>ลืมรหัสผ่าน | Anukon Shop</title>
+    <!-- CSS & Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
         body {
-            font-family: 'Kanit', sans-serif;
-            background: #f0f2f5;
+            font-family: 'Noto Sans Thai', sans-serif;
+            background: var(--bg-color);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            color: var(--text-main);
         }
-        .forgot-card {
+        .auth-card {
             background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             overflow: hidden;
+            padding: 40px;
         }
-        .card-header-shop {
-            background: #e67e22;
-            padding: 30px 20px;
-            text-align: center;
-            color: white;
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 24px;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .form-control {
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.95rem;
         }
-        .animate-up { animation: slideUp 0.4s ease-out; }
+        .form-control:focus {
+            background: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="forgot-card animate-up">
-    <div class="card-header-shop">
-        <i class="fa-solid fa-lock fa-3x mb-3"></i>
-        <h3 class="fw-bold mb-0">ลืมรหัสผ่าน?</h3>
-        <p class="small mb-0 opacity-75">ไม่ต้องกังวล เราช่วยคุณได้</p>
-    </div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-6">
+            <div class="auth-card mx-auto">
+                <div class="text-center mb-4">
+                    <div class="icon-circle">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="fw-bold mb-2">ลืมรหัสผ่าน?</h3>
+                    <p class="text-muted">กรุณากรอกชื่อผู้ใช้ (Username) และอีเมลของท่าน <br>ระบบจะทำการสร้างรหัสผ่านใหม่ชั่วคราวให้</p>
+                </div>
 
-    <div class="p-4 p-md-5">
-        <div class="text-center mb-4">
-            <i class="fa-solid fa-store fa-4x text-primary opacity-50 mb-3"></i>
-            <h5 class="fw-bold text-dark">กรุณาติดต่อที่ร้านค้า</h5>
-            <p class="text-muted">เพื่อความปลอดภัย การรีเซ็ตรหัสผ่านจะต้องดำเนินการโดยเจ้าหน้าที่ของเราโดยตรง</p>
-        </div>
+                <form id="forgotForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">ชื่อผู้ใช้ (Username)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted px-3"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="username" placeholder="Username ของคุณ" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted">อีเมล (Email)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted px-3"><i class="fa-solid fa-envelope"></i></span>
+                            <input type="email" class="form-control border-start-0 ps-0" name="email" placeholder="example@email.com" required>
+                        </div>
+                    </div>
 
-        <div class="card bg-light border-0 rounded-4 mb-4">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                    <div class="bg-success bg-opacity-10 rounded-circle p-3 me-3">
-                        <i class="fa-solid fa-phone text-success fa-lg"></i>
+                    <button type="submit" class="btn btn-primary w-100 mb-4" id="btnSubmit">
+                        <i class="fa-solid fa-paper-plane me-2"></i>ยืนยันขอกู้รหัสผ่าน
+                    </button>
+
+                    <div class="text-center">
+                        <a href="login.php" class="back-link"><i class="fa-solid fa-arrow-left me-2"></i>กลับไปหน้าเข้าสู่ระบบ</a>
                     </div>
-                    <div>
-                        <small class="text-muted d-block">โทรศัพท์</small>
-                        <strong>02-xxx-xxxx</strong>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                    <div class="bg-success bg-opacity-10 rounded-circle p-3 me-3">
-                        <i class="fa-brands fa-line text-success fa-lg"></i>
-                    </div>
-                    <div>
-                        <small class="text-muted d-block">LINE ID</small>
-                        <strong>@v-shop</strong>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center">
-                    <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
-                        <i class="fa-solid fa-envelope text-primary fa-lg"></i>
-                    </div>
-                    <div>
-                        <small class="text-muted d-block">อีเมล</small>
-                        <strong>admin@v-shop.com</strong>
-                    </div>
-                </div>
+                </form>
+            </div>
+            
+            <div class="text-center mt-4 text-muted small">
+                &copy; <?php echo date('Y'); ?> Anukon Shop. All rights reserved.
             </div>
         </div>
-
-        <div class="alert alert-info text-center small mb-4 rounded-3">
-            <i class="fa-solid fa-clock me-1"></i> เวลาทำการ: จันทร์ - เสาร์ 09:00 - 18:00
-        </div>
-
-        <a href="login.php" class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow-sm">
-            <i class="fa-solid fa-arrow-left me-2"></i>กลับหน้าเข้าสู่ระบบ
-        </a>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#forgotForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        let btn = $('#btnSubmit');
+        let ogText = btn.html();
+        
+        btn.html('<i class="fa-solid fa-spinner fa-spin me-2"></i>กำลังตรวจสอบ...').prop('disabled', true);
+        
+        $.ajax({
+            url: '../api/auth/forgot_password.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(res) {
+                btn.html(ogText).prop('disabled', false);
+                
+                if (res.status === 'success') {
+                    // Success! Show temp password
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'สำเร็จ!',
+                        html: res.message, // The API returns the HTML formatted message with the new password
+                        confirmButtonText: 'ไปหน้าเข้าสู่ระบบ',
+                        confirmButtonColor: '#6366f1',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        window.location.href = 'login.php';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'เกิดข้อผิดพลาด',
+                        text: res.message,
+                        confirmButtonColor: '#ef4444'
+                    });
+                }
+            },
+            error: function() {
+                btn.html(ogText).prop('disabled', false);
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', 'error');
+            }
+        });
+    });
+});
+</script>
 
 </body>
 </html>

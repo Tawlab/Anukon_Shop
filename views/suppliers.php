@@ -1,129 +1,115 @@
 <?php 
 include_once '../includes/header.php'; 
-include_once '../includes/sidebar.php'; 
 
-if ($_SESSION['role'] !== 'admin') {
-    header("Location: dashboard.php");
-    exit;
-}
+if ($_SESSION['role'] !== 'admin') { header("Location: dashboard.php"); exit; }
 
-// ดึงข้อมูลซัพพลายเออร์ทั้งหมด
 $sql = "SELECT * FROM supplers ORDER BY sp_id DESC";
 $result = $conn->query($sql);
 ?>
 
-<main id="content" class="flex-grow-1">
-    <div class="container-fluid py-4">
-        
-        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-            <h2 class="fw-bold mb-0"><i class="fa-solid fa-handshake text-primary me-2"></i>จัดการซัพพลายเออร์</h2>
-            <div class="d-flex gap-2">
-                <button class="btn btn-success shadow-sm rounded-pill px-3" onclick="window.location.href='../api/export/export_data.php?type=suppliers'">
-                    <i class="fa-solid fa-file-excel me-1"></i>ส่งออก Excel
-                </button>
-                <button class="btn btn-primary rounded-pill px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#addSupModal">
-                    <i class="fa-solid fa-plus me-1"></i> เพิ่มผู้จัดจำหน่าย
-                </button>
-            </div>
+<main class="page-content fade-up">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <h5 class="fw-bold mb-0"><i class="fa-solid fa-handshake text-primary me-2"></i>ซัพพลายเออร์</h5>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-success btn-sm" onclick="window.location.href='../api/export/export_data.php?type=suppliers'">
+                <i class="fa-solid fa-file-excel me-1"></i>Excel
+            </button>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addSupModal">
+                <i class="fa-solid fa-plus me-1"></i>เพิ่ม
+            </button>
         </div>
+    </div>
 
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-4">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>บริษัท/ร้านค้า</th>
-                                <th>เลขผู้เสียภาษี</th>
-                                <th>ผู้ติดต่อ</th>
-                                <th>เบอร์โทร</th>
-                                <th>สถานะ</th>
-                                <th class="text-center">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if ($result->num_rows > 0): ?>
-                                <?php 
-                                $counter = 1;
-                                while($row = $result->fetch_assoc()): 
-                                ?>
-                                <tr>
-                                    <td class="text-muted"><?php echo $counter++; ?></td>
-                                    <td class="fw-bold text-primary"><?php echo htmlspecialchars($row['sp_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['sp_tax']) ?: '-'; ?></td>
-                                    <td>
-                                        <div><?php echo htmlspecialchars($row['ct_first_name']) ?: '-'; ?></div>
-                                        <small class="text-muted"><?php echo htmlspecialchars($row['sp_email']); ?></small>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($row['ct_phone']) ?: '-'; ?></td>
-                                    <td>
-                                        <?php if($row['sp_status'] == 1): ?>
-                                            <span class="badge bg-success px-2 py-1"><i class="fa-solid fa-check-circle me-1"></i>เปิดดิว</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-secondary px-2 py-1"><i class="fa-solid fa-ban me-1"></i>ระงับ</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-info rounded-circle me-1" title="แก้ไข"
-                                                onclick='editSup(<?php echo json_encode($row, JSON_HEX_APOS | JSON_HEX_QUOT); ?>)'>
-                                            <i class="fa-solid fa-pen"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger rounded-circle ms-1" title="ลบ"
-                                                onclick="deleteSup(<?php echo $row['sp_id']; ?>)">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php endwhile; ?>
-                            <?php else: ?>
-                                <tr><td colspan="7" class="text-center py-5 text-muted">
-                                    <i class="fa-solid fa-building fa-3x mb-3 opacity-25 d-block"></i>ยังไม่มีข้อมูลผู้จัดจำหน่าย
-                                </td></tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+    <!-- Card Grid -->
+    <div class="row g-3">
+        <?php if ($result->num_rows > 0): ?>
+            <?php while($row = $result->fetch_assoc()): ?>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card p-4 h-100 <?php echo $row['sp_status'] == 0 ? 'opacity-50' : ''; ?>">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--primary-light); display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-building text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0"><?php echo htmlspecialchars($row['sp_name']); ?></h6>
+                                <small class="text-muted"><?php echo htmlspecialchars($row['sp_tax']) ?: 'ไม่ระบุเลขภาษี'; ?></small>
+                            </div>
+                        </div>
+                        <?php if($row['sp_status'] == 1): ?>
+                            <span class="badge bg-success-soft text-success" style="background: var(--success-soft);">เปิดใช้งาน</span>
+                        <?php else: ?>
+                            <span class="badge" style="background: var(--danger-soft); color: var(--danger);">ระงับ</span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="small text-muted mb-3">
+                        <div class="mb-1"><i class="fa-solid fa-user me-2 text-secondary"></i><?php echo htmlspecialchars($row['ct_first_name'] ?? '') . ' ' . htmlspecialchars($row['ct_last_name'] ?? ''); ?></div>
+                        <div class="mb-1"><i class="fa-solid fa-phone me-2 text-secondary"></i><?php echo htmlspecialchars($row['ct_phone']) ?: '-'; ?></div>
+                        <div><i class="fa-solid fa-envelope me-2 text-secondary"></i><?php echo htmlspecialchars($row['sp_email']) ?: '-'; ?></div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-auto">
+                        <button class="btn btn-sm btn-outline-primary flex-fill" 
+                                onclick='editSup(<?php echo json_encode($row, JSON_HEX_APOS | JSON_HEX_QUOT); ?>)'>
+                            <i class="fa-solid fa-pen me-1"></i>แก้ไข
+                        </button>
+                        <button class="btn btn-sm btn-outline-<?php echo $row['sp_status'] == 1 ? 'warning' : 'success'; ?>" 
+                                onclick="toggleSupStatus(<?php echo $row['sp_id']; ?>, <?php echo $row['sp_status']; ?>)" title="<?php echo $row['sp_status'] == 1 ? 'ปิดใช้งาน' : 'เปิดใช้งาน'; ?>">
+                            <i class="fa-solid fa-<?php echo $row['sp_status'] == 1 ? 'ban' : 'check'; ?>"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSup(<?php echo $row['sp_id']; ?>)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-
+            <?php endwhile; ?>
+        <?php else: ?>
+            <div class="col-12">
+                <div class="card p-5 text-center text-muted">
+                    <i class="fa-solid fa-building fa-3x mb-3 opacity-25"></i>
+                    <p>ยังไม่มีข้อมูลซัพพลายเออร์</p>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 </main>
 
 <!-- Modal เพิ่ม -->
 <div class="modal fade" id="addSupModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header bg-primary text-white border-0 rounded-top-4 pb-3">
-                <h5 class="modal-title fw-bold"><i class="fa-solid fa-plus-circle me-2"></i>เพิ่มซัพพลายเออร์</h5>
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h6 class="modal-title fw-bold"><i class="fa-solid fa-plus-circle me-2"></i>เพิ่มซัพพลายเออร์</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="addSupForm">
                 <div class="modal-body p-4 row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">ชื่อบริษัท / ร้านค้า <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold small">ชื่อบริษัท/ร้าน <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="sp_name" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">เลขผู้เสียภาษี</label>
+                        <label class="form-label fw-bold small">เลขผู้เสียภาษี</label>
                         <input type="text" class="form-control" name="sp_tax">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">ชื่อผู้ติดต่อ</label>
+                        <label class="form-label fw-bold small">ชื่อผู้ติดต่อ</label>
                         <input type="text" class="form-control" name="ct_first_name">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">เบอร์โทรศัพท์</label>
+                        <label class="form-label fw-bold small">เบอร์โทร</label>
                         <input type="text" class="form-control" name="ct_phone">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">อีเมล</label>
+                        <label class="form-label fw-bold small">อีเมล</label>
                         <input type="email" class="form-control" name="sp_email">
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-primary px-4">บันทึกข้อมูล</button>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
                 </div>
             </form>
         </div>
@@ -133,38 +119,38 @@ $result = $conn->query($sql);
 <!-- Modal แก้ไข -->
 <div class="modal fade" id="editSupModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4">
-            <div class="modal-header bg-info text-white border-0 rounded-top-4 pb-3">
-                <h5 class="modal-title fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i>แก้ไขข้อมูล</h5>
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h6 class="modal-title fw-bold"><i class="fa-solid fa-pen me-2"></i>แก้ไขข้อมูล</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="editSupForm">
                 <input type="hidden" name="sp_id" id="e_sp_id">
                 <div class="modal-body p-4 row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">ชื่อบริษัท / ร้านค้า <span class="text-danger">*</span></label>
+                        <label class="form-label fw-bold small">ชื่อบริษัท/ร้าน <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="sp_name" id="e_sp_name" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">เลขผู้เสียภาษี</label>
+                        <label class="form-label fw-bold small">เลขผู้เสียภาษี</label>
                         <input type="text" class="form-control" name="sp_tax" id="e_sp_tax">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">ชื่อผู้ติดต่อ</label>
+                        <label class="form-label fw-bold small">ชื่อผู้ติดต่อ</label>
                         <input type="text" class="form-control" name="ct_first_name" id="e_ct_first_name">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">เบอร์โทรศัพท์</label>
+                        <label class="form-label fw-bold small">เบอร์โทร</label>
                         <input type="text" class="form-control" name="ct_phone" id="e_ct_phone">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">อีเมล</label>
+                        <label class="form-label fw-bold small">อีเมล</label>
                         <input type="email" class="form-control" name="sp_email" id="e_sp_email">
                     </div>
                 </div>
-                <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-light border" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-info text-white px-4">อัปเดตข้อมูล</button>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn btn-info text-white">อัปเดต</button>
                 </div>
             </form>
         </div>
@@ -174,16 +160,9 @@ $result = $conn->query($sql);
 <script>
 $('#addSupForm').on('submit', function(e) {
     e.preventDefault();
-    Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-    let formData = $(this).serialize() + '&action=add';
-    
-    $.post('../api/suppliers/sup_api.php', formData, function(res) {
-        if(res.status === 'success') {
-            Swal.fire({ icon: 'success', title: 'สำเร็จ!', showConfirmButton: false, timer: 1200 })
-            .then(() => location.reload());
-        } else {
-            Swal.fire('ข้อผิดพลาด', res.message, 'error');
-        }
+    Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() });
+    $.post('../api/suppliers/sup_api.php', $(this).serialize() + '&action=add', function(res) {
+        res.status === 'success' ? Swal.fire({ icon: 'success', title: 'สำเร็จ!', timer: 1000, showConfirmButton: false }).then(() => location.reload()) : Swal.fire('ผิดพลาด', res.message, 'error');
     }, 'json');
 });
 
@@ -199,37 +178,41 @@ function editSup(data) {
 
 $('#editSupForm').on('submit', function(e) {
     e.preventDefault();
-    Swal.fire({ title: 'กำลังอัปเดต...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
-    let formData = $(this).serialize() + '&action=update';
-    
-    $.post('../api/suppliers/sup_api.php', formData, function(res) {
-        if(res.status === 'success') {
-            Swal.fire({ icon: 'success', title: 'อัปเดตสำเร็จ!', showConfirmButton: false, timer: 1200 })
-            .then(() => location.reload());
-        } else {
-            Swal.fire('ข้อผิดพลาด', res.message, 'error');
-        }
+    Swal.fire({ title: 'กำลังอัปเดต...', didOpen: () => Swal.showLoading() });
+    $.post('../api/suppliers/sup_api.php', $(this).serialize() + '&action=update', function(res) {
+        res.status === 'success' ? Swal.fire({ icon: 'success', title: 'อัปเดตแล้ว!', timer: 1000, showConfirmButton: false }).then(() => location.reload()) : Swal.fire('ผิดพลาด', res.message, 'error');
     }, 'json');
 });
 
+// NEW: Toggle Status
+function toggleSupStatus(id, currentStatus) {
+    let newStatus = currentStatus == 1 ? 0 : 1;
+    let actionText = newStatus == 1 ? 'เปิดใช้งาน' : 'ปิดใช้งาน';
+    
+    Swal.fire({
+        title: actionText + '?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: actionText,
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: newStatus == 1 ? '#22c55e' : '#f59e0b'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post('../api/suppliers/sup_api.php', { action: 'toggle_status', sp_id: id, sp_status: newStatus }, function(res) {
+                res.status === 'success' ? Swal.fire({ icon: 'success', title: actionText + 'แล้ว!', timer: 1000, showConfirmButton: false }).then(() => location.reload()) : Swal.fire('ผิดพลาด', res.message, 'error');
+            }, 'json');
+        }
+    });
+}
+
 function deleteSup(id) {
     Swal.fire({
-        title: 'ยืนยันการลบ?',
-        text: 'การลบจะไม่สามารถนำกลับมาได้',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        confirmButtonText: 'ลบทันที',
-        cancelButtonText: 'ยกเลิก'
+        title: 'ยืนยันลบ?', icon: 'warning', showCancelButton: true,
+        confirmButtonColor: '#ef4444', confirmButtonText: 'ลบ', cancelButtonText: 'ยกเลิก'
     }).then((result) => {
         if (result.isConfirmed) {
             $.post('../api/suppliers/sup_api.php', { action: 'delete', sp_id: id }, function(res) {
-                if(res.status === 'success') {
-                    Swal.fire({ icon: 'success', title: 'ลบสำเร็จ!', showConfirmButton: false, timer: 1000 })
-                    .then(() => location.reload());
-                } else {
-                    Swal.fire('ลบไม่ได้', res.message, 'error');
-                }
+                res.status === 'success' ? Swal.fire({ icon: 'success', title: 'ลบแล้ว!', timer: 1000, showConfirmButton: false }).then(() => location.reload()) : Swal.fire('ลบไม่ได้', res.message, 'error');
             }, 'json');
         }
     });
