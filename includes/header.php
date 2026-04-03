@@ -9,6 +9,9 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$res_shop = $conn->query("SELECT setting_value FROM store_settings WHERE setting_key = 'shop_name'");
+$shop_name = ($res_shop && $res_shop->num_rows > 0) ? $res_shop->fetch_assoc()['setting_value'] : 'Anukon Shop';
+
 // Notifications
 $notifications = [];
 $noti_count = 0;
@@ -483,9 +486,10 @@ if (rand(1, 10) === 1) {
                         data-bs-target="#sidebarOffcanvas">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <span class="nav-brand d-none d-sm-block">
-                        <i class="fa-solid fa-store me-1"></i>Anukon Shop
-                    </span>
+                    <!-- <span class="nav-brand d-none d-sm-block">
+                        <i class="fa-solid fa-store me-1"></i>
+                        <?php echo htmlspecialchars($shop_name); ?>
+                    </span> -->
                 </div>
 
                 <div class="d-flex align-items-center gap-3">

@@ -1,13 +1,14 @@
 <?php
-function renderMenu($role) {
+function renderMenu($role)
+{
     $current_page = basename($_SERVER['PHP_SELF']);
-    
-    $isActive = function($page) use ($current_page) {
+
+    $isActive = function ($page) use ($current_page) {
         return ($current_page == $page) ? 'active' : '';
     };
 
     echo '<ul class="sidebar-menu">';
-    
+
     // Dashboard - ทุก role
     echo '<li><a href="dashboard.php" class="menu-item ' . $isActive('dashboard.php') . '">
             <span class="menu-icon"><i class="fa-solid fa-house"></i></span>
@@ -21,7 +22,7 @@ function renderMenu($role) {
                 <span class="menu-icon bg-success-soft text-success"><i class="fa-solid fa-cash-register"></i></span>
                 <span>POS เครื่องคิดเงิน</span>
               </a></li>';
-        
+
         // จัดการร้าน
         echo '<li class="menu-section">จัดการร้านค้า</li>';
         echo '<li><a href="sales_summary.php" class="menu-item ' . $isActive('sales_summary.php') . '">
@@ -52,11 +53,15 @@ function renderMenu($role) {
                 <span class="menu-icon"><i class="fa-solid fa-wallet"></i></span>
                 <span>ค่าใช้จ่าย</span>
               </a></li>';
-              
+
         echo '<li class="menu-section">ผู้ใช้งาน</li>';
         echo '<li><a href="users_manage.php" class="menu-item ' . $isActive('users_manage.php') . '">
                 <span class="menu-icon"><i class="fa-solid fa-users-gear"></i></span>
                 <span>จัดการสมาชิก</span>
+              </a></li>';
+        echo '<li><a href="shop-setting.php" class="menu-item ' . $isActive('shop-setting.php') . '">
+                <span class="menu-icon"><i class="fa-solid fa-shop"></i></span>
+                <span>ตั้งคาร้านค้า</span>
               </a></li>';
     } else {
         // Customer menu
@@ -81,7 +86,7 @@ function renderMenu($role) {
             <span class="menu-icon"><i class="fa-solid fa-circle-user"></i></span>
             <span>โปรไฟล์</span>
           </a></li>';
-    
+
     echo '<li class="mt-3"><a href="../actions/logout.php" class="menu-item menu-logout">
             <span class="menu-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
             <span>ออกจากระบบ</span>
@@ -95,7 +100,9 @@ function renderMenu($role) {
     <div class="sidebar-brand">
         <i class="fa-solid fa-store"></i>
         <div>
-            <div class="brand-name">Anukon Shop</div>
+            <div class="brand-name">
+                <?php echo htmlspecialchars($shop_name); ?>
+            </div>
             <div class="brand-sub">ร้านค้าออนไลน์</div>
         </div>
     </div>
@@ -139,12 +146,14 @@ function renderMenu($role) {
         color: var(--primary);
         font-size: 1.25rem;
     }
+
     .brand-name {
         font-weight: 700;
         font-size: 1rem;
         line-height: 1.2;
         color: var(--text);
     }
+
     .brand-sub {
         font-size: 0.72rem;
         color: var(--text-muted);
@@ -185,17 +194,20 @@ function renderMenu($role) {
         transition: var(--transition);
         margin-bottom: 2px;
     }
+
     .menu-item:hover {
         background: var(--primary-light);
         color: var(--primary);
     }
+
     .menu-item.active {
         background: var(--primary);
         color: #fff;
-        box-shadow: 0 2px 8px rgba(99,102,241,0.25);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
     }
+
     .menu-item.active .menu-icon {
-        background: rgba(255,255,255,0.2) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
         color: #fff !important;
     }
 
@@ -212,21 +224,31 @@ function renderMenu($role) {
         flex-shrink: 0;
         transition: var(--transition);
     }
-    .bg-success-soft { background: var(--success-soft) !important; }
-    .text-success { color: var(--success) !important; }
+
+    .bg-success-soft {
+        background: var(--success-soft) !important;
+    }
+
+    .text-success {
+        color: var(--success) !important;
+    }
 
     .menu-logout {
         color: var(--danger) !important;
     }
+
     .menu-logout:hover {
         background: var(--danger-soft) !important;
         color: var(--danger) !important;
     }
+
     .menu-logout .menu-icon {
         background: var(--danger-soft);
         color: var(--danger);
     }
 
     /* Offcanvas override */
-    .offcanvas-body .sidebar-menu { padding: 8px 12px; }
+    .offcanvas-body .sidebar-menu {
+        padding: 8px 12px;
+    }
 </style>
